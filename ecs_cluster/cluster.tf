@@ -4,8 +4,8 @@ resource "aws_ecs_cluster" "ecs_cluster" {
 
 resource "aws_autoscaling_group" "ecs_cluster_as_group" {
   name = "${var.cluster_name}-autoscale_group"
-  min_size = 1
-  max_size = 1
+  min_size = var.min_cluster_size
+  max_size = var.max_cluster_size
 
   tag {
     key                 = "AmazonECSManaged"
@@ -28,4 +28,6 @@ resource "aws_ecs_capacity_provider" "ecs_cluster_capacity_provider" {
       target_capacity           = 10
     }
   }
+
+
 }

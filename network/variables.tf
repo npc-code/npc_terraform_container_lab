@@ -30,14 +30,3 @@ variable "nat_gw_production" {
     description = "set to true to follow best practice and deploy a nat gateway in every az for use by the private subnet.  false will create only one."   
 }
 
-variable "min_cluster_size" {
-    type = number
-    default = 1
-    description = "minimum cluster size for the autoscaling group"
-}
-
-variable "max_cluster_size" {
-    type = number
-    default = 1
-    description = "maximum cluster size for the autoscaling group"
-}
