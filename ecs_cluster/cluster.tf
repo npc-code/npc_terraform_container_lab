@@ -28,6 +28,7 @@ resource "aws_autoscaling_group" "ecs_cluster_as_group" {
   #may have to forcibly destroy resources from the cli if there is a need to clean things up.
   force_delete = true
 
+  #more tags
   tag {
     key                 = "AmazonECSManaged"
     value               = ""
