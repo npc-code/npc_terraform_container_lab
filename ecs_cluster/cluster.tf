@@ -34,6 +34,18 @@ resource "aws_autoscaling_group" "ecs_cluster_as_group" {
     propagate_at_launch = true
   }
 
+  tag {
+    key = "Name"
+    value = "${var.cluster_name}-instance"
+    propagate_at_launch = true
+  }
+
+  tag {
+    key = "Environment"
+    value = var.environment
+    propagate_at_launch = true
+  }
+
   lifecycle {
     create_before_destroy = true
   }
