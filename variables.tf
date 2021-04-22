@@ -45,6 +45,11 @@ variable "cluster_name" {
   description = "name for the ecs cluster"
 }
 
+variable "instance_type" {
+  type = string
+  description = "instance type to use for the cluster"
+}
+
 variable "min_cluster_size" {
   type        = number
   description = "minimum cluster size for ec2 autoscaling group"
@@ -52,7 +57,6 @@ variable "min_cluster_size" {
 
 variable "max_cluster_size" {
   description = "maximum cluster size for ec2 autoscaling group"
-
 }
 
 variable "environment" {
