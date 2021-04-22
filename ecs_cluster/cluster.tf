@@ -40,6 +40,7 @@ resource "aws_autoscaling_group" "ecs_cluster_as_group" {
 }
 
 #change step sizes to variables, along with target_capacity
+#potentially remove managed_scaling
 resource "aws_ecs_capacity_provider" "ecs_cluster_capacity_provider" {
   name = "${var.cluster_name}-capacity_provider"
 
