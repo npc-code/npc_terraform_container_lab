@@ -28,21 +28,18 @@ resource "aws_autoscaling_group" "ecs_cluster_as_group" {
   #may have to forcibly destroy resources from the cli if there is a need to clean things up.
   force_delete = true
 
-  instance_refresh {
-    strategy = "Rolling"
-    preferences {
-      min_healthy_percentage = 50
-    }
-    triggers = ["tag"]
-  }
-
   tag {
     key                 = "AmazonECSManaged"
     value               = ""
     propagate_at_launch = true
   }
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
+#change step sizes to variables, along with target_capacity
 resource "aws_ecs_capacity_provider" "ecs_cluster_capacity_provider" {
   name = "${var.cluster_name}-capacity_provider"
 
@@ -56,6 +53,10 @@ resource "aws_ecs_capacity_provider" "ecs_cluster_capacity_provider" {
       status                    = "ENABLED"
       target_capacity           = 100
     }
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 
 
