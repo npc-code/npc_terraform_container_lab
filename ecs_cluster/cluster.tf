@@ -23,10 +23,18 @@ resource "aws_autoscaling_group" "ecs_cluster_as_group" {
 
   launch_configuration      = aws_launch_configuration.ecs_cluster_instance_config.name
   vpc_zone_identifier       = var.cluster_subnets_private
-  protect_from_scale_in     = true
+  #protect_from_scale_in     = true
   #see: https://github.com/hashicorp/terraform-provider-aws/issues/5278
   #may have to forcibly destroy resources from the cli if there is a need to clean things up.
   force_delete = true
+
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 50
+    }
+    triggers = ["tag"]
+  }
 
   #more tags
   tag {
@@ -59,7 +67,7 @@ resource "aws_ecs_capacity_provider" "ecs_cluster_capacity_provider" {
 
   auto_scaling_group_provider {
     auto_scaling_group_arn         = aws_autoscaling_group.ecs_cluster_as_group.arn
-    managed_termination_protection = "ENABLED"
+    managed_termination_protection = "DISABLED"
 
     managed_scaling {
       maximum_scaling_step_size = 2

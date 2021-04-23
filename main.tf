@@ -43,3 +43,17 @@ module "ecs_cluster" {
     aws = aws.main-account
   }
 }
+
+module "ecs_task_1" {
+  source = "./ecs_task"
+  task_name = "task_1"
+  container_port = 80
+  host_port = 80
+  container_name = "web_1"
+  image_name = "nginx:latest"
+  environment = var.environment
+
+  providers = {
+    aws = aws.main-account
+  }
+}
