@@ -1,6 +1,6 @@
 resource "aws_iam_role" "container_instance" {
-  name               = "container_instance-${terraform.workspace}"
-  assume_role_policy = <<EOF
+  name               = "container_instance-${var.environment}-role"
+  assume_role_policy = jsonencode(
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -12,8 +12,7 @@ resource "aws_iam_role" "container_instance" {
       "Effect": "Allow"
     }
   ]
-}
-EOF
+})
 
   tags = {
     tag-key = "tag-value"
@@ -21,7 +20,7 @@ EOF
 
 }
 resource "aws_iam_instance_profile" "ec2_instance_role" {
-  name = "iam_instance_profile-${terraform.workspace}"
+  name = "iam_instance_profile-${var.environment}"
   role = aws_iam_role.container_instance.name
 }
 resource "aws_iam_role_policy_attachment" "ec2_instance" {

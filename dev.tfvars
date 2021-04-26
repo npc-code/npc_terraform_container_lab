@@ -6,3 +6,5 @@ min_cluster_size  = 2
 max_cluster_size  = 4
 #instance_type = "t3a.micro"
 instance_type = "t3.micro"
+region = "us-east-1"
+external_ip = "74.69.167.125/32"
