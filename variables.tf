@@ -34,8 +34,32 @@ variable "az_count" {
 }
 
 variable "nat_gw_production" {
-    type = bool
-    default = true
-    description = "set to true to follow best practice and deploy a nat gateway in every az for use by the private subnet.  false will create only one."
-    
+  type        = bool
+  default     = true
+  description = "set to true to follow best practice and deploy a nat gateway in every az for use by the private subnet.  false will create only one."
+
+}
+
+variable "cluster_name" {
+  type        = string
+  description = "name for the ecs cluster"
+}
+
+variable "instance_type" {
+  type = string
+  description = "instance type to use for the cluster"
+}
+
+variable "min_cluster_size" {
+  type        = number
+  description = "minimum cluster size for ec2 autoscaling group"
+}
+
+variable "max_cluster_size" {
+  description = "maximum cluster size for ec2 autoscaling group"
+}
+
+variable "environment" {
+  type        = string
+  description = "environment to deploy to"
 }

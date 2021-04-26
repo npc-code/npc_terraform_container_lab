@@ -1,0 +1,36 @@
+variable "cluster_name" {
+  type = string
+  description = "name for your ecs cluster"
+}
+
+variable "environment" {
+  type = string
+  description = "environment to deploy into" 
+}
+
+variable "min_cluster_size" {
+    type = number
+    default = 1
+    description = "minimum cluster size for the autoscaling group"
+}
+
+variable "max_cluster_size" {
+    type = number
+    default = 1
+    description = "maximum cluster size for the autoscaling group"
+}
+
+variable "image_id" {
+  type = string
+  description = "ami id to use for the ec2 instances in the cluster"
+}
+
+variable "instance_type" {
+  type = string
+  description = "instance type to use"
+}
+
+variable "cluster_subnets_private" {
+  type = list
+  description = "subnets to deploy cluster into."
+}

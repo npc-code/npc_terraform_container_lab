@@ -27,6 +27,6 @@ variable "az_count" {
 variable "nat_gw_production" {
     type = bool
     default = true
-    description = "set to true to follow best practice and deploy a nat gateway in every az for use by the private subnet.  false will create only one."
-    
+    description = "set to true to follow best practice and deploy a nat gateway in every az for use by the private subnet.  false will create only one."   
 }
+
