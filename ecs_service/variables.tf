@@ -24,7 +24,7 @@ variable "container_port" {
 
 variable "service_name" {
   type = string
-  decription = "name of the service"
+  description = "name of the service"
 }
 
 variable "cluster_id" {

@@ -44,6 +44,18 @@ module "ecs_cluster" {
   }
 }
 
+module "ecs_service_1" {
+  source = "./ecs_service"
+  task_definition_arn = module.ecs_task_1.task_arn
+  desired_count = 2
+  service_name = "web_service"
+  cluster_id = module.ecs_cluster.ecs_cluster_id
+
+  providers = {
+    aws = aws.main-account
+  }
+}
+
 module "ecs_task_1" {
   source = "./ecs_task"
   task_name = "task_1"
@@ -52,6 +64,9 @@ module "ecs_task_1" {
   container_name = "web_1"
   image_name = "nginx:latest"
   environment = var.environment
+  region = var.region
+  memory = 512
+  cpu = 10
 
   providers = {
     aws = aws.main-account
