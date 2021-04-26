@@ -48,8 +48,14 @@ module "ecs_service_1" {
   source = "./ecs_service"
   task_definition_arn = module.ecs_task_1.task_arn
   desired_count = 2
-  service_name = "web_service"
+  service_name = "web-service"
   cluster_id = module.ecs_cluster.ecs_cluster_id
+  container_subnets = module.network.private_subnets
+  alb_public_subnets = module.network.public_subnets
+  vpc_id = module.network.vpc_id
+  environment = var.environment
+  container_port = 80
+  container_name = "web_1"
 
   providers = {
     aws = aws.main-account

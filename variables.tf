@@ -63,3 +63,9 @@ variable "environment" {
   type        = string
   description = "environment to deploy to"
 }
+
+variable "external_ip" {
+  type = string
+  description = "external ip in cidr to allow access"
+  default = "0.0.0.0/0"
+}
