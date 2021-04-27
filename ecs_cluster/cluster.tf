@@ -10,11 +10,12 @@ resource "aws_launch_configuration" "ecs_cluster_instance_config" {
   instance_type = var.instance_type
   #could mount devices within user data if need be
   #may be better to move userdata to a templated file
-  user_data            = "#!/bin/bash\necho ECS_CLUSTER=${var.cluster_name} >> /etc/ecs/ecs.config && systemctl restart docker"
+  user_data            = "#!/bin/bash\necho ECS_CLUSTER=${var.cluster_name} >> /etc/ecs/ecs.config && systemctl restart docker && mkdir -p /ecs/data"
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_role.name
   #arguments to play with here:
-  #key_name
+  key_name = var.key_name
   security_groups = [aws_security_group.ecs_instance_sg.id]
+  associate_public_ip_address = true
   #root_block_device
   #ebs_block_device
 

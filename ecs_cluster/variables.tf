@@ -8,6 +8,11 @@ variable "environment" {
   description = "environment to deploy into" 
 }
 
+variable "key_name" {
+  type = string
+  description = "name of key managed by aws to use for instance debugging"
+}
+
 variable "min_cluster_size" {
     type = number
     default = 1
@@ -38,4 +43,9 @@ variable "cluster_subnets_private" {
 variable "vpc_id" {
   type = string
   description = "vpc id to use for security group creation"
+}
+
+variable "external_ip" {
+  type = string
+  description = "external ip to use for cluster debugging purposes"
 }

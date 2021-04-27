@@ -1,6 +1,7 @@
 variable "alb_public_subnets" {
   type = list
   description = "public subnets for the load balancer to use"
+  default = []
 }
 
 variable "lb_enabled" {

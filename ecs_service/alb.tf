@@ -1,7 +1,8 @@
 resource "aws_alb" "app_alb" {
+  count = var.lb_enabled ? 1 : 0
   name            = "${var.service_name}-alb"
   subnets         = var.alb_public_subnets
-  security_groups = [aws_security_group.alb_sg.id]
+  security_groups = [aws_security_group.alb_sg[0].id]
 
   tags = {
     Name        = "${var.service_name}-alb"
@@ -10,6 +11,7 @@ resource "aws_alb" "app_alb" {
 }
 
 resource "aws_alb_target_group" "target_group" {
+  count = var.lb_enabled ? 1 : 0
   name_prefix = substr(var.service_name, 0, 6)
   port        = var.container_port
   protocol    = "HTTP"
@@ -30,12 +32,13 @@ resource "aws_alb_target_group" "target_group" {
 }
 
 resource "aws_alb_listener" "http_forward" {
-  load_balancer_arn = aws_alb.app_alb.arn
+  count = var.lb_enabled ? 1 : 0
+  load_balancer_arn = aws_alb.app_alb[0].arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.target_group.arn
+    target_group_arn = aws_alb_target_group.target_group[0].arn
     type             = "forward"
   }
 

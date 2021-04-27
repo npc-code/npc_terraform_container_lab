@@ -1,5 +1,5 @@
 
-resource "aws_ecs_task_definition" "generic_task" {
+resource "aws_ecs_task_definition" "generic_task_volumes" {
   family = var.task_name
   network_mode = var.network_mode
   execution_role_arn = aws_iam_role.ecs_execution_role.arn
@@ -27,9 +27,20 @@ resource "aws_ecs_task_definition" "generic_task" {
          awslogs-stream-prefix = var.container_name
         }
       }
+      mountPoints = [
+        {
+          sourceVolume = "data"
+          containerPath = "/var/lib/mysql"
+        }
+      ]
     }
+
+    
   ])
-  
+  volume {
+      name = "data"
+      host_path = "/ecs/data"
+    }
   
 }
 
