@@ -22,7 +22,7 @@ module "network" {
   base_network      = var.base_network
   network_mask      = var.network_mask
   subnet_mask       = var.subnet_mask
-  nat_gw_production = true
+  nat_gw_production = false
 
   providers = {
     aws = aws.main-account
@@ -38,6 +38,9 @@ module "ecs_cluster" {
   image_id = data.aws_ami.ecs_ami.id
   instance_type = var.instance_type
   cluster_subnets_private = module.network.private_subnets
+  vpc_id = module.network.vpc_id
+  key_name = var.key_name
+  external_ip = var.external_ip
 
   providers = {
     aws = aws.main-account
@@ -56,6 +59,26 @@ module "ecs_service_1" {
   environment = var.environment
   container_port = 80
   container_name = "web_1"
+  lb_enabled = true
+
+  providers = {
+    aws = aws.main-account
+  }
+}
+
+module "ecs_service_mysql" {
+  source = "./ecs_service"
+  task_definition_arn = module.ecs_task_volumes.task_arn
+  desired_count = 2
+  service_name = "mysql-test-service"
+  cluster_id = module.ecs_cluster.ecs_cluster_id
+  container_subnets = module.network.private_subnets
+  #alb_public_subnets = module.network.public_subnets
+  vpc_id = module.network.vpc_id
+  environment = var.environment
+  container_port = 33060
+  container_name = "mysql"
+  lb_enabled = false
 
   providers = {
     aws = aws.main-account
@@ -73,6 +96,25 @@ module "ecs_task_1" {
   region = var.region
   memory = 512
   cpu = 10
+
+
+  providers = {
+    aws = aws.main-account
+  }
+}
+
+module "ecs_task_volumes" {
+  source = "./ecs_task_volumes"
+  task_name = "task_volumes"
+  container_port = 33060
+  host_port = 33060
+  container_name = "mysql"
+  image_name = "mysql:latest"
+  environment = var.environment
+  region = var.region
+  memory = 512
+  cpu = 10
+  environment_variables = var.environment_variables
 
   providers = {
     aws = aws.main-account

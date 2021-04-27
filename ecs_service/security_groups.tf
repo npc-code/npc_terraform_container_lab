@@ -1,29 +1,6 @@
-resource "aws_security_group" "app_sg" {
-  name        = "${var.service_name}-app-sg"
-  description = "Default security group to allow inbound/outbound from the VPC"
-  vpc_id      = var.vpc_id
-
-  ingress {
-    from_port = "0"
-    to_port   = "0"
-    protocol  = "-1"
-    self      = true
-  }
-
-  egress {
-    from_port = "0"
-    to_port   = "0"
-    protocol  = "-1"
-    self      = "true"
-  }
-
-  tags = {
-    Environment = var.environment
-  }
-}
-
 # ALB Security Group
 resource "aws_security_group" "alb_sg" {
+  count = var.lb_enabled ? 1 : 0
   name        = "${var.service_name}-alb-sg"
   description = "ALB Security Group"
   vpc_id      = var.vpc_id
@@ -48,16 +25,18 @@ resource "aws_security_group" "alb_sg" {
 }
 
 resource "aws_security_group_rule" "https" {
+  count = var.lb_enabled ? 1 : 0
   type              = "ingress"
   from_port         = "443"
   to_port           = "443"
   protocol          = "tcp"
   cidr_blocks       = [var.external_ip]
-  security_group_id = aws_security_group.alb_sg.id
+  security_group_id = aws_security_group.alb_sg[0].id
 }
 
 # ECS Cluster Security Group
 resource "aws_security_group" "ecs_sg" {
+  count = var.lb_enabled ? 1 : 0
   vpc_id      = var.vpc_id
   name        = "${var.service_name}-ecs-service-sg"
   description = "Allow egress from container"
@@ -73,7 +52,7 @@ resource "aws_security_group" "ecs_sg" {
       from_port = var.container_port
       to_port = var.container_port
       protocol = "tcp"
-      security_groups = [aws_security_group.alb_sg.id]
+      security_groups = [aws_security_group.alb_sg[0].id]
       
   }
 
@@ -83,11 +62,39 @@ resource "aws_security_group" "ecs_sg" {
   }
 }
 
+resource "aws_security_group" "ecs_sg_no_lb" {
+  count = var.lb_enabled ? 0 : 1
+  vpc_id      = var.vpc_id
+  name        = "${var.service_name}-ecs-service-no-lb-sg"
+  description = "Allow egress from container"
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  
+  #ingress {
+  #    from_port = var.container_port
+  #    to_port = var.container_port
+  #    protocol = "tcp"
+  #    security_groups = [aws_security_group.alb_sg[0].id]
+      
+  #}
+
+  tags = {
+    Name        = "${var.service_name}-ecs-service-no-lb-sg"
+    Environment = var.service_name
+  }
+}
+
 resource "aws_security_group_rule" "alb_to_ecs" {
-  security_group_id        = aws_security_group.alb_sg.id
+  count = var.lb_enabled ? 1 : 0
+  security_group_id        = aws_security_group.alb_sg[0].id
   from_port                = var.container_port
   to_port                  = var.container_port
   protocol                 = "tcp"
   type                     = "egress"
-  source_security_group_id = aws_security_group.ecs_sg.id
+  source_security_group_id = aws_security_group.ecs_sg[0].id
 }
