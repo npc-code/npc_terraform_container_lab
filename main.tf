@@ -38,6 +38,7 @@ module "ecs_cluster" {
   image_id = data.aws_ami.ecs_ami.id
   instance_type = var.instance_type
   cluster_subnets_private = module.network.private_subnets
+  vpc_id = module.network.vpc_id
 
   providers = {
     aws = aws.main-account

@@ -34,3 +34,8 @@ variable "cluster_subnets_private" {
   type = list
   description = "subnets to deploy cluster into."
 }
+
+variable "vpc_id" {
+  type = string
+  description = "vpc id to use for security group creation"
+}
