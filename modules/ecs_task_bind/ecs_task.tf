@@ -1,3 +1,7 @@
+locals {
+  mount_points = var.use_volume ? [{sourceVolume = "data", containerPath = var.container_path}] : []
+}
+
 
 resource "aws_ecs_task_definition" "generic_task_volumes" {
   family = var.task_name
@@ -27,20 +31,17 @@ resource "aws_ecs_task_definition" "generic_task_volumes" {
          awslogs-stream-prefix = var.container_name
         }
       }
-      mountPoints = [
-        {
-          sourceVolume = "data"
-          containerPath = "/var/lib/mysql"
-        }
-      ]
-    }
-
-    
+      mountPoints = local.mount_points
+    }    
   ])
-  volume {
+
+  dynamic "volume" {
+    for_each = var.use_volume ? [1] : [0]
+    content {
       name = "data"
       host_path = "/ecs/data"
     }
+  }
   
 }
 
