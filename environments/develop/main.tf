@@ -38,7 +38,7 @@ module "ecs_cluster" {
 }
 
 module "ecs_service_1" {
-  source              = "./ecs_service"
+  source              = "../../modules/ecs_service"
   task_definition_arn = module.ecs_task_1.task_arn
   desired_count       = 2
   service_name        = "web-service"
@@ -54,7 +54,7 @@ module "ecs_service_1" {
 }
 
 module "ecs_service_mysql" {
-  source              = "./ecs_service"
+  source              = "../../modules/ecs_service"
   task_definition_arn = module.ecs_task_volumes.task_arn
   desired_count       = 2
   service_name        = "mysql-test-service"
@@ -70,7 +70,7 @@ module "ecs_service_mysql" {
 }
 
 module "ecs_service_discovery_mysql" {
-  source         = "./ecs_service_discovery"
+  source         = "../../modules/ecs_service_discovery"
   vpc_id         = module.network.vpc_id
   namespace_name = "mysql.container.local"
   service_name   = "toy"
@@ -78,7 +78,7 @@ module "ecs_service_discovery_mysql" {
 }
 
 module "ecs_task_1" {
-  source                = "./ecs_task"
+  source                = "../../modules/ecs_task"
   task_name             = "task_1"
   container_port        = 8080
   host_port             = 8080
@@ -92,7 +92,7 @@ module "ecs_task_1" {
 }
 
 module "ecs_task_volumes" {
-  source                = "./ecs_task_volumes"
+  source                = "../../modules/ecs_task_volumes"
   task_name             = "task_volumes"
   container_port        = 3306
   host_port             = 3306
