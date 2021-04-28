@@ -1,7 +1,7 @@
 provider "aws" {
   profile = var.profile
   region  = var.region
-  alias   = "main-account"
+  #alias   = "main-account"
 }
 
 #could specifiy values via variable, to allow for x86 or arm64
@@ -13,7 +13,7 @@ data "aws_ami" "ecs_ami" {
     name   = "name"
     values = ["amzn2-ami-ecs-hvm-*-x86_64-ebs"]
   }
-  provider = aws.main-account
+  #provider = aws.main-account
 }
 
 module "network" {
@@ -24,9 +24,9 @@ module "network" {
   subnet_mask       = var.subnet_mask
   nat_gw_production = false
 
-  providers = {
-    aws = aws.main-account
-  }
+  #providers = {
+  #  aws = aws.main-account
+  #}
 }
 
 module "ecs_cluster" {
@@ -42,9 +42,9 @@ module "ecs_cluster" {
   key_name = var.key_name
   external_ip = var.external_ip
 
-  providers = {
-    aws = aws.main-account
-  }
+  #providers = {
+  #  aws = aws.main-account
+  #}
 }
 
 module "ecs_service_1" {
@@ -63,9 +63,9 @@ module "ecs_service_1" {
   external_ip = var.external_ip
 
 
-  providers = {
-    aws = aws.main-account
-  }
+  #providers = {
+  #  aws = aws.main-account
+  #}
 }
 
 module "ecs_service_mysql" {
@@ -84,9 +84,9 @@ module "ecs_service_mysql" {
   service_registry_arn = module.ecs_service_discovery_mysql.service_discovery_arn
 
 
-  providers = {
-    aws = aws.main-account
-  }
+  #providers = {
+  #  aws = aws.main-account
+  #}
 }
 
 module "ecs_service_discovery_mysql" {
@@ -96,9 +96,9 @@ module "ecs_service_discovery_mysql" {
   service_name = "toy"
   description = "toy discovery for mysql containers"
 
-  providers = {
-    aws = aws.main-account
-  }
+  #providers = {
+  #  aws = aws.main-account
+  #}
 }
 
 module "ecs_task_1" {
@@ -114,9 +114,9 @@ module "ecs_task_1" {
   cpu = 10
   environment_variables = [{"name":"ADMINER_DEFAULT_SERVER", "value":"toy.mysql.container.local"}]
 
-  providers = {
-    aws = aws.main-account
-  }
+  #providers = {
+  #  aws = aws.main-account
+  #}
 }
 
 module "ecs_task_volumes" {
@@ -133,7 +133,18 @@ module "ecs_task_volumes" {
   environment_variables = var.environment_variables
 
 
-  providers = {
-    aws = aws.main-account
-  }
+  #providers = {
+  #  aws = aws.main-account
+  #}
+}
+
+resource "aws_security_group_rule" "frontend_to_backend" {
+  security_group_id        = module.ecs_service_mysql.ecs_security_group_id
+  from_port                = 3306
+  to_port                  = 3306
+  protocol                 = "tcp"
+  type                     = "ingress"
+  source_security_group_id = module.ecs_service_1.ecs_security_group_id
+  #provider = aws.main-account
+
 }
