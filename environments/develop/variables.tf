@@ -21,24 +21,24 @@ variable "environment" {
 }
 
 variable "environment_variables" {
-  type        = list
+  type        = list(any)
   description = "ecs task environment variables. list of {'name': 'value', 'value' : 'value'} items.  see default for example"
-  default = [{ "name": "test", "value": "what"}, {"name": "test2", "value": "okay"}]
+  default     = [{ "name" : "test", "value" : "what" }, { "name" : "test2", "value" : "okay" }]
 }
 
 variable "external_ip" {
-  type = string
+  type        = string
   description = "external ip in cidr to allow access"
-  default = "0.0.0.0/0"
+  default     = "0.0.0.0/0"
 }
 
 variable "instance_type" {
-  type = string
+  type        = string
   description = "instance type to use for the cluster"
 }
 
 variable "key_name" {
-  type = string
+  type        = string
   description = "aws key to use for instance debugging"
 }
 
