@@ -3,6 +3,17 @@ variable "container_name" {
 	description = "container name"
 }
 
+variable "container_path" {
+  type = string
+  description = "path on container you want to map the volume to.  defaults to empty if you are not using a volume"
+  default = ""
+}
+
+variable "container_port" {
+  type = number
+  description = "port that the container exposes"
+}
+
 variable "cpu" {
   type = number
   description = "desired cpu usage"
@@ -23,11 +34,6 @@ variable "image_name" {
   description = "container image to use"
 }
 
-variable "container_port" {
-  type = number
-  description = "port that the container exposes"
-}
-
 variable "host_port" {
   type = number
   description = "port exposed on the host"
@@ -43,10 +49,10 @@ variable "task_name" {
   description = "name for this task"
 }
 
-variable "v_enabled" {
+variable "use_volume" {
   type = bool
-  default = false
   description = "set to true to use a volume"
+  default = false
 }
 
 variable "v_name" {

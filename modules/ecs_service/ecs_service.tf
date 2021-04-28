@@ -2,15 +2,11 @@ locals {
   use_service_registry = var.service_registry_arn != "" ? true : false
 }
 
-
-
 resource "aws_ecs_service" "generic_service" {
   name            = var.service_name
   cluster         = var.cluster_id
   task_definition = var.task_definition_arn
   desired_count   = var.desired_count
-  #iam_role        = aws_iam_role.ecs_role.arn
-  #depends_on      = [aws_iam_role_policy.ecs_service_role_policy]
 
   ordered_placement_strategy {
     type  = "binpack"
@@ -35,9 +31,6 @@ resource "aws_ecs_service" "generic_service" {
     for_each = local.use_service_registry ? [1] : []
     content {
       registry_arn = var.service_registry_arn
-      #port = var.container_port
-      #container_port = var.container_port
-      #container_name = var.container_name
     }
   }
 

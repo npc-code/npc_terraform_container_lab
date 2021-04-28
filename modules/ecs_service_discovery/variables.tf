@@ -1,7 +1,7 @@
 #variables
-variable "vpc_id" {
+variable "description" {
   type = string
-  description = "vpc id"
+  description = "brief description of discovery service endpoint"
 }
 
 variable "namespace_name" {
@@ -14,7 +14,7 @@ variable "service_name" {
   description = "name that will be prepended to namespace_name"
 }
 
-variable "description" {
+variable "vpc_id" {
   type = string
-  description = "brief description of discovery service endpoint"
+  description = "vpc id"
 }
