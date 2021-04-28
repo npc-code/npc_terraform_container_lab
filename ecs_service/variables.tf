@@ -39,6 +39,12 @@ variable "service_name" {
   description = "name of the service"
 }
 
+variable "service_registry_arn" {
+  type = string
+  default = ""
+  description = "arn of service registry you would like to use"
+}
+
 variable "cluster_id" {
   type = string
   description = "ecs cluster id to place service into"

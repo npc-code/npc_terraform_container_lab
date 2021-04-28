@@ -57,9 +57,11 @@ module "ecs_service_1" {
   alb_public_subnets = module.network.public_subnets
   vpc_id = module.network.vpc_id
   environment = var.environment
-  container_port = 80
-  container_name = "web_1"
+  container_port = 8080
+  container_name = "adminer"
   lb_enabled = true
+  external_ip = var.external_ip
+
 
   providers = {
     aws = aws.main-account
@@ -76,9 +78,23 @@ module "ecs_service_mysql" {
   #alb_public_subnets = module.network.public_subnets
   vpc_id = module.network.vpc_id
   environment = var.environment
-  container_port = 33060
+  container_port = 3306
   container_name = "mysql"
   lb_enabled = false
+  service_registry_arn = module.ecs_service_discovery_mysql.service_discovery_arn
+
+
+  providers = {
+    aws = aws.main-account
+  }
+}
+
+module "ecs_service_discovery_mysql" {
+  source = "./ecs_service_discovery"
+  vpc_id = module.network.vpc_id
+  namespace_name = "mysql.container.local"
+  service_name = "toy"
+  description = "toy discovery for mysql containers"
 
   providers = {
     aws = aws.main-account
@@ -88,15 +104,15 @@ module "ecs_service_mysql" {
 module "ecs_task_1" {
   source = "./ecs_task"
   task_name = "task_1"
-  container_port = 80
-  host_port = 80
-  container_name = "web_1"
-  image_name = "nginx:latest"
+  container_port = 8080
+  host_port = 8080
+  container_name = "adminer"
+  image_name = "adminer:latest"
   environment = var.environment
   region = var.region
   memory = 512
   cpu = 10
-
+  environment_variables = [{"name":"ADMINER_DEFAULT_SERVER", "value":"toy.mysql.container.local"}]
 
   providers = {
     aws = aws.main-account
@@ -106,8 +122,8 @@ module "ecs_task_1" {
 module "ecs_task_volumes" {
   source = "./ecs_task_volumes"
   task_name = "task_volumes"
-  container_port = 33060
-  host_port = 33060
+  container_port = 3306
+  host_port = 3306
   container_name = "mysql"
   image_name = "mysql:latest"
   environment = var.environment
@@ -115,6 +131,7 @@ module "ecs_task_volumes" {
   memory = 512
   cpu = 10
   environment_variables = var.environment_variables
+
 
   providers = {
     aws = aws.main-account
