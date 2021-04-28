@@ -24,7 +24,7 @@ module "network" {
 }
 
 module "ecs_cluster" {
-  source                  = "./ecs_cluster"
+  source = "github.com/npc-code/aws_ecs_cluster?ref=v1.0.0"
   cluster_name            = "${var.cluster_name}-${var.environment}"
   environment             = var.environment
   min_cluster_size        = var.min_cluster_size
