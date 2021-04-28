@@ -1,7 +1,7 @@
-variable "base_cidr" {
-  type    = string
-  default = "10.0.0.0/16"
-}
+#variable "base_cidr" {
+#  type    = string
+#  default = "10.0.0.0/16"
+#}
 
 variable "base_network" {
     type = string
