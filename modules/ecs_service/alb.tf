@@ -3,12 +3,26 @@ resource "aws_alb" "app_alb" {
   name            = "${var.service_name}-alb"
   subnets         = var.alb_public_subnets
   security_groups = [aws_security_group.alb_sg[0].id]
+  
+  access_logs {
+    bucket  = aws_s3_bucket.app_alb_logs[0].bucket
+    prefix  = "${var.service_name}-alb"
+    enabled = true
+  }
 
   tags = {
     Name        = "${var.service_name}-alb"
     Environment = var.environment
   }
 }
+
+resource "aws_s3_bucket" "app_alb_logs" {
+  count = var.lb_enabled ? 1 : 0
+  bucket_prefix = "${var.service_name}-alb-logs-"
+  acl           = "log-delivery-write"
+  force_destroy = true
+}
+
 
 resource "aws_alb_target_group" "target_group" {
   count = var.lb_enabled ? 1 : 0

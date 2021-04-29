@@ -38,3 +38,59 @@ data "aws_iam_policy_document" "ecs_service_role" {
     }
   }
 }
+
+resource "aws_s3_bucket_policy" "alb_logs_policy" {
+  count = var.lb_enabled ? 1 : 0
+  bucket = aws_s3_bucket.app_alb_logs[0].id
+  policy = data.aws_iam_policy_document.s3_bucket_alb_write[0].json
+}
+
+data "aws_elb_service_account" "main" {
+
+}
+
+
+data "aws_iam_policy_document" "s3_bucket_alb_write" {
+  count = var.lb_enabled ? 1 : 0
+  policy_id = "${var.service_name}_s3_bucket_alb_logs"
+
+  statement {
+    actions = [
+      "s3:PutObject",
+    ]
+    effect = "Allow"
+    resources = [
+      "${aws_s3_bucket.app_alb_logs[0].arn}/*",
+    ]
+
+    principals {
+      identifiers = ["${data.aws_elb_service_account.main.arn}"]
+      type        = "AWS"
+    }
+  }
+
+  statement {
+    actions = [
+      "s3:PutObject"
+    ]
+    effect = "Allow"
+    resources = ["${aws_s3_bucket.app_alb_logs[0].arn}/*"]
+    principals {
+      identifiers = ["delivery.logs.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+
+
+  statement {
+    actions = [
+      "s3:GetBucketAcl"
+    ]
+    effect = "Allow"
+    resources = ["${aws_s3_bucket.app_alb_logs[0].arn}"]
+    principals {
+      identifiers = ["delivery.logs.amazonaws.com"]
+      type        = "Service"
+    }
+  }
+}
