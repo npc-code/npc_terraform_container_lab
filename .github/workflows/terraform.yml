@@ -31,7 +31,7 @@ jobs:
         with:
           directory: ./environments/develop/tests
           #check: CKV_AWS_1 # optional: run only a specific check_id. can be comma separated list
-          #skip_check: CKV_AWS_1 # optional: skip a specific check_id. can be comma separated list
+          skip_check: CKV_AWS_65 # optional: skip a specific check_id. can be comma separated list
           quiet: true # optional: display only failed checks
           soft_fail: true # optional: do not return an error code if there are failed checks
           framework: terraform # optional: run only on a specific infrastructure {cloudformation,terraform,kubernetes,all}
