@@ -15,7 +15,7 @@ data "aws_ami" "ecs_ami" {
 }
 
 module "network" {
-  source = "github.com/npc-code/aws_modular_vpc?ref=v1.0.1"
+  source = "github.com/npc-code/aws_modular_vpc.git?ref=v1.0.1"
   az_count          = var.az_count
   base_network      = var.base_network
   network_mask      = var.network_mask
