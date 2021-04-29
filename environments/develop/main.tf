@@ -15,7 +15,7 @@ data "aws_ami" "ecs_ami" {
 }
 
 module "network" {
-  source = "https://github.com/npc-code/aws_modular_vpc?ref=v1.0.0"
+  source = "github.com/npc-code/aws_modular_vpc?ref=v1.0.1"
   az_count          = var.az_count
   base_network      = var.base_network
   network_mask      = var.network_mask
@@ -24,7 +24,7 @@ module "network" {
 }
 
 module "ecs_cluster" {
-  source = "https://github.com/npc-code/aws_ecs_cluster?ref=v1.0.0"
+  source = "github.com/npc-code/aws_ecs_cluster?ref=v1.0.0"
   cluster_name            = "${var.cluster_name}-${var.environment}"
   environment             = var.environment
   min_cluster_size        = var.min_cluster_size
