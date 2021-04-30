@@ -3,6 +3,7 @@ resource "aws_alb" "app_alb" {
   name            = "${var.service_name}-alb"
   subnets         = var.alb_public_subnets
   security_groups = [aws_security_group.alb_sg[0].id]
+  drop_invalid_header_fields = true
   
   access_logs {
     bucket  = aws_s3_bucket.app_alb_logs[0].bucket
@@ -20,6 +21,15 @@ resource "aws_s3_bucket" "app_alb_logs" {
   count = var.lb_enabled ? 1 : 0
   bucket_prefix = "${var.service_name}-alb-logs-"
   acl           = "log-delivery-write"
+  server_side_encryption_configuration {
+  rule {
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
+  }
+}
+
+
   force_destroy = true
 }
 
